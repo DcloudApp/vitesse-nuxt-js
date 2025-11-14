@@ -5,4 +5,3 @@ export default defineEventHandler(() => ({
   pageview: count++,
   startAt,
 }))
-
