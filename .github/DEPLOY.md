@@ -22,7 +22,6 @@ systemctl start docker
 # 创建部署目录
 mkdir -p /www/wwwroot/my-nuxt-app
 ```
-
 #### 生成部署专用 SSH 密钥
 
 为了避免影响日常登录，推荐为 GitHub Actions 创建“部署专用密钥”：
@@ -55,7 +54,7 @@ ssh -i ~/.ssh/github_actions_deploy root@your-server-ip
 3. 点击 **New repository secret** 添加以下密钥：
 
 | Secret 名称 | 说明 | 示例值 |
-|------------|------|--------|
+| --- | --- | --- |
 | `BT_HOST` | 服务器 IP 地址或域名 | `123.456.789.0` 或 `your-server.com` |
 | `BT_USERNAME` | SSH 用户名（通常是 `root`） | `root` |
 | `BT_SSH_KEY` | 服务器私钥内容 | 复制 `~/.ssh/github_actions_deploy` 的完整内容 |
@@ -90,7 +89,7 @@ cat ~/.ssh/github_actions_deploy
 server {
     listen 80;
     server_name your-domain.com;
-    
+
     location / {
         proxy_pass http://127.0.0.1:3000;
         proxy_http_version 1.1;
@@ -215,7 +214,7 @@ docker run -d \
 
 ```yaml
 - name: Run tests
-  run: pnpm test  # 如果有测试脚本
+  run: pnpm test # 如果有测试脚本
 ```
 
 ### 通知配置
