@@ -23,21 +23,28 @@ systemctl start docker
 mkdir -p /www/wwwroot/my-nuxt-app
 ```
 
-#### 配置 SSH 密钥对
+#### 生成部署专用 SSH 密钥
 
-在服务器上生成 SSH 密钥对（如果还没有）：
-
-```bash
-# 在服务器上执行
-ssh-keygen -t rsa -b 4096 -C "github-actions-deploy" -f ~/.ssh/github_actions_deploy
-```
-
-将公钥添加到服务器的 `~/.ssh/authorized_keys`：
+为了避免影响日常登录，推荐为 GitHub Actions 创建“部署专用密钥”：
 
 ```bash
+# 生成无密码密钥（推荐 ed25519，如不支持可换成 rsa 4096）
+ssh-keygen -t ed25519 -C "github-actions-deploy" -f ~/.ssh/github_actions_deploy -N ""
+
+# 将公钥写入授权列表
 cat ~/.ssh/github_actions_deploy.pub >> ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 ```
+
+> **可选加强**：编辑 `~/.ssh/authorized_keys`，在这一行前加入 `from="<your-github-actions-ip-range>"`、`command="..."` 等限制，降低权限暴露。
+
+在服务器上验证密钥可用：
+
+```bash
+ssh -i ~/.ssh/github_actions_deploy root@your-server-ip
+```
+
+若连接无需密码即可进入，说明密钥配置成功。
 
 ### 2. 配置 GitHub Secrets
 
@@ -54,8 +61,11 @@ chmod 600 ~/.ssh/authorized_keys
 | `BT_SSH_KEY` | 服务器私钥内容 | 复制 `~/.ssh/github_actions_deploy` 的完整内容 |
 | `BT_SSH_PORT` | SSH 端口（可选，默认 22） | `22` |
 | `BT_DEPLOY_PATH` | 部署路径（可选，默认 `/www/wwwroot/my-nuxt-app`） | `/www/wwwroot/my-nuxt-app` |
-| `BT_APP_NAME` | Docker 容器名称（可选，默认 `my-nuxt-app`） | `my-nuxt-app` |
+| `BT_APP_NAME` | Docker 容器名称（可选，默认 `my-nuxt-app`） | `nuxt-prod` |
 | `BT_APP_PORT` | 宿主机暴露端口（可选，默认 `3000`） | `8080` |
+| `BT_SSH_KEY_PASSPHRASE` | 若保留口令，可填写（建议使用无密码部署密钥） | `your-passphrase` |
+
+> 如果上述可选项不填，workflow 会自动使用默认值；只在需要自定义时添加 Secret。建议将生成的私钥 **只** 存在 GitHub Secrets 中，不要上传到仓库或共享给他人。
 
 #### 如何获取 SSH 私钥
 

@@ -54,10 +54,15 @@ jobs:
           port: ${{ secrets.BT_SSH_PORT || 22 }}
           script: |
             set -e
-            WORKDIR=${{ secrets.BT_DEPLOY_PATH || '/www/wwwroot/my-nuxt-app' }}
+            WORKDIR="${{ secrets.BT_DEPLOY_PATH }}"
+            APP_NAME="${{ secrets.BT_APP_NAME }}"
+            APP_PORT="${{ secrets.BT_APP_PORT }}"
             IMAGE_TAG=${{ github.sha }}
-            APP_NAME=${{ secrets.BT_APP_NAME || 'my-nuxt-app' }}
-            APP_PORT=${{ secrets.BT_APP_PORT || 3000 }}
+            DOCKER_IMAGE="my-nuxt-app"
+
+            : "${WORKDIR:=/www/wwwroot/my-nuxt-app}"
+            : "${APP_NAME:=my-nuxt-app}"
+            : "${APP_PORT:=3000}"
 
             mkdir -p "$WORKDIR"
             cd "$WORKDIR"
@@ -74,7 +79,7 @@ jobs:
               --restart always \
               -p "${APP_PORT}:3000" \
               -e NODE_ENV=production \
-              my-nuxt-app:${IMAGE_TAG}
+              "${DOCKER_IMAGE}:${IMAGE_TAG}"
 
             docker image prune -f
 
