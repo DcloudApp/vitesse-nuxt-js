@@ -10,6 +10,9 @@ watchEffect(() => {
 definePageMeta({
   layout: 'home',
 })
+useHead({
+  title: `Hi, ${name}!`,
+})
 </script>
 
 <template>
