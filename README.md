@@ -10,7 +10,7 @@
 <br>
 <a href="https://vitesse-nuxt3.netlify.app/">🖥 Online Preview</a>
 <br><br>
-<a href="https://stackblitz.com/github/antfu/vitesse-nuxt-js"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt=""></a>
+<a href="https://stackblitz.com/github/DcloudApp/vitesse-nuxt-js"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt=""></a>
 </p>
 
 ## Features
@@ -56,25 +56,25 @@ We recommend using [VS Code](https://code.visualstudio.com/) with [Volar](https:
 
 - [vitesse](https://github.com/antfu/vitesse) - Opinionated Vite Starter Template
 - [vitesse-lite](https://github.com/antfu/vitesse-lite) - Lightweight version of Vitesse
-- [vitesse-nuxt-bridge](https://github.com/antfu/vitesse-nuxt-js-bridge) - Vitesse for Nuxt 2 with Bridge
+- [vitesse-nuxt-bridge](https://github.com/DcloudApp/vitesse-nuxt-js-bridge) - Vitesse for Nuxt 2 with Bridge
 - [vitesse-webext](https://github.com/antfu/vitesse-webext) - WebExtension Vite starter template
 
 ## Try it now!
 
 ### Online
 
-<a href="https://stackblitz.com/github/antfu/vitesse-nuxt-js"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt=""></a>
+<a href="https://stackblitz.com/github/DcloudApp/vitesse-nuxt-js"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt=""></a>
 
 ### GitHub Template
 
-[Create a repo from this template on GitHub](https://github.com/antfu/vitesse-nuxt-js-js/generate).
+[Create a repo from this template on GitHub](https://github.com/DcloudApp/vitesse-nuxt-js/generate).
 
 ### Clone to local
 
 If you prefer to do it manually with the cleaner git history
 
 ```bash
-npx degit antfu/vitesse-nuxt-js-js my-nuxt-app
+npx degit DcloudApp/vitesse-nuxt-js my-nuxt-app
 cd my-nuxt-app
 pnpm i # If you don't have pnpm installed, run: npm install -g pnpm
 ```
