@@ -63,9 +63,10 @@ ssh -i ~/.ssh/github_actions_deploy root@your-server-ip
 | `BT_DEPLOY_PATH` | 部署路径（可选，默认 `/www/wwwroot/my-nuxt-app`） | `/www/wwwroot/my-nuxt-app` |
 | `BT_APP_NAME` | Docker 容器名称（可选，默认 `my-nuxt-app`） | `nuxt-prod` |
 | `BT_APP_PORT` | 宿主机暴露端口（可选，默认 `3000`） | `8080` |
+| `BT_DOCKER_IMAGE` | 镜像名（可选，默认 `my-nuxt-app`） | `registry.cn-xxx/nuxt/app` |
 | `BT_SSH_KEY_PASSPHRASE` | 若保留口令，可填写（建议使用无密码部署密钥） | `your-passphrase` |
 
-> 如果上述可选项不填，workflow 会自动使用默认值；只在需要自定义时添加 Secret。建议将生成的私钥 **只** 存在 GitHub Secrets 中，不要上传到仓库或共享给他人。
+> 如果上述可选项不填或留空白字符，workflow 会自动回落到默认值（会自动去除空格/Tab）。建议将生成的私钥 **只** 存在 GitHub Secrets 中，不要上传到仓库或共享给他人。
 
 #### 如何获取 SSH 私钥
 

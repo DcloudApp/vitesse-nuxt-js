@@ -57,12 +57,19 @@ jobs:
             WORKDIR="${{ secrets.BT_DEPLOY_PATH }}"
             APP_NAME="${{ secrets.BT_APP_NAME }}"
             APP_PORT="${{ secrets.BT_APP_PORT }}"
+            DOCKER_IMAGE="${{ secrets.BT_DOCKER_IMAGE }}"
             IMAGE_TAG=${{ github.sha }}
-            DOCKER_IMAGE="my-nuxt-app"
 
             : "${WORKDIR:=/www/wwwroot/my-nuxt-app}"
-            : "${APP_NAME:=my-nuxt-app}"
-            : "${APP_PORT:=3000}"
+
+            # 去除名称与端口中的空白字符，避免 docker run 报错
+            APP_NAME="$(printf '%s' "$APP_NAME" | tr -d '[:space:]')"
+            APP_PORT="$(printf '%s' "$APP_PORT" | tr -d '[:space:]')"
+            DOCKER_IMAGE="$(printf '%s' "$DOCKER_IMAGE" | tr -d '[:space:]')"
+
+            [ -n "$APP_NAME" ] || APP_NAME="my-nuxt-app"
+            [ -n "$APP_PORT" ] || APP_PORT="3000"
+            [ -n "$DOCKER_IMAGE" ] || DOCKER_IMAGE="my-nuxt-app"
 
             mkdir -p "$WORKDIR"
             cd "$WORKDIR"
