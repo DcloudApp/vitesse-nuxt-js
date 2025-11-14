@@ -25,3 +25,88 @@ jobs:
 
       - name: Lint
         run: pnpm run lint
+
+  deploy:
+    needs: lint
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t my-nuxt-app:${IMAGE_TAG} .
+
+      - name: Save image artifact
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker save my-nuxt-app:${IMAGE_TAG} | gzip > my-nuxt-app.tar.gz
+
+      - name: Deploy to server via SSH
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.BT_HOST }}
+          username: ${{ secrets.BT_USERNAME }}
+          key: ${{ secrets.BT_SSH_KEY }}
+          port: ${{ secrets.BT_SSH_PORT || 22 }}
+          source: "my-nuxt-app.tar.gz"
+          target: ${{ secrets.BT_DEPLOY_PATH || '/www/wwwroot/my-nuxt-app' }}
+
+      - name: Load image and restart container
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.BT_HOST }}
+          username: ${{ secrets.BT_USERNAME }}
+          key: ${{ secrets.BT_SSH_KEY }}
+          port: ${{ secrets.BT_SSH_PORT || 22 }}
+          script: |
+            set -e
+            WORKDIR="${{ secrets.BT_DEPLOY_PATH }}"
+            APP_NAME="${{ secrets.BT_APP_NAME }}"
+            APP_PORT="${{ secrets.BT_APP_PORT }}"
+            DOCKER_IMAGE="${{ secrets.BT_DOCKER_IMAGE }}"
+            IMAGE_TAG=${{ github.sha }}
+
+            : "${WORKDIR:=/www/wwwroot/my-nuxt-app}"
+
+            # 去除名称与端口中的空白字符，避免 docker run 报错
+            APP_NAME="$(printf '%s' "$APP_NAME" | tr -d '[:space:]')"
+            APP_PORT="$(printf '%s' "$APP_PORT" | tr -d '[:space:]')"
+            DOCKER_IMAGE="$(printf '%s' "$DOCKER_IMAGE" | tr -d '[:space:]')"
+
+            [ -n "$APP_NAME" ] || APP_NAME="my-nuxt-app"
+            [ -n "$APP_PORT" ] || APP_PORT="3000"
+            [ -n "$DOCKER_IMAGE" ] || DOCKER_IMAGE="my-nuxt-app"
+
+            mkdir -p "$WORKDIR"
+            cd "$WORKDIR"
+
+            docker load -i my-nuxt-app.tar.gz
+            rm -f my-nuxt-app.tar.gz
+
+            if docker ps -a --format '{{.Names}}' | grep -Eq "^${APP_NAME}\$"; then
+              docker rm -f "${APP_NAME}"
+            fi
+
+            docker run -d \
+              --name "${APP_NAME}" \
+              --restart always \
+              -p "${APP_PORT}:3000" \
+              -e NODE_ENV=production \
+              "${DOCKER_IMAGE}:${IMAGE_TAG}"
+
+            docker image prune -f
+
+      - name: Deployment status
+        run: |
+          echo "✅ Deployment completed successfully!"
