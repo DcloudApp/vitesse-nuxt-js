@@ -12,7 +12,7 @@ const WEAK_NETWORK_TIMEOUT = 15000 // 3G超时时间(15秒)
 const RETRY_DELAY = [1000, 3000, 5000] // 重试延迟
 const MAX_RETRIES = 3 // 最大重试次数
 const REQUEST_DELAY_TOLERANCE = 2000 // 允许的请求延迟容忍度(2秒)
-
+// 倒计时同步核心逻辑
 export function useCountdownSync(options = {}) {
   const isClient = import.meta.client
   const {
@@ -267,7 +267,9 @@ export function useCountdownSync(options = {}) {
     }
     finally {
       syncing.value = false
-      setTimeout(() => { isSyncDisabled.value = false }, 1000)
+      setTimeout(() => {
+        isSyncDisabled.value = false
+      }, 1000)
       updateRemaining()
     }
   }

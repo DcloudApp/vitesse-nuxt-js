@@ -1,4 +1,7 @@
 packages: []
+catalog:
+  lint-staged: ^15.2.2
+  simple-git-hooks: 2.13.1
 catalogs:
   build:
     '@nuxt/devtools': ^3.0.0-beta.2
@@ -29,5 +32,3 @@ onlyBuiltDependencies:
   - '@parcel/watcher'
   - esbuild
   - unrs-resolver
-catalog:
-  lint-staged: ^15.2.2

@@ -11,7 +11,9 @@
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
     "start:generate": "npx serve .output/public",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "postinstall": "npx simple-git-hooks"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:dev",
@@ -31,6 +33,7 @@
     "lint-staged": "catalog:",
     "nuxt": "catalog:build",
     "pinia": "catalog:frontend",
+    "simple-git-hooks": "catalog:",
     "unocss": "catalog:build",
     "vue": "catalog:frontend"
   },
