@@ -31,11 +31,24 @@ export default defineNuxtConfig({
         { name: 'theme-color', media: '(prefers-color-scheme: light)', content: 'white' },
         { name: 'theme-color', media: '(prefers-color-scheme: dark)', content: '#222222' },
       ],
+      script: [
+        {
+          src: '//unpkg.com/vconsole@latest/dist/vconsole.min.js',
+          type: 'text/javascript',
+        },
+        { innerHTML: 'new VConsole()' },
+      ],
     },
+
   },
 
   colorMode: {
     classSuffix: '',
+  },
+
+  devServer: {
+    host: '0.0.0.0',
+    port: 3000,
   },
 
   future: {

@@ -27,6 +27,14 @@ const online = useOnline()
         </div>
       </template>
     </ClientOnly>
+    <ClientOnly>
+      <CountdownTimer mt-8 />
+      <template #fallback>
+        <div op50>
+          <span animate-pulse>Loading countdown…</span>
+        </div>
+      </template>
+    </ClientOnly>
     <InputEntry />
   </div>
 </template>
