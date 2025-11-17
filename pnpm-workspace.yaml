@@ -29,3 +29,5 @@ onlyBuiltDependencies:
   - '@parcel/watcher'
   - esbuild
   - unrs-resolver
+catalog:
+  lint-staged: ^15.2.2
