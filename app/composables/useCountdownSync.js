@@ -166,24 +166,29 @@ export function useCountdownSync(options = {}) {
     requestSendTime.value = Date.now()
     const controller = new AbortController()
     const { signal } = controller
-    const timeoutTimer = setTimeout(() => controller.abort(), requestTimeout)
+
+    // 手动设置超时中止（兼容所有 iOS 版本）
+    const timeoutTimer = setTimeout(() => {
+      controller.abort() // 超时后中止请求
+    }, requestTimeout)
 
     try {
-      const response = await fetch('/api/end-time', {
+    // 保留 Nuxt $fetch，仅替换 signal 逻辑
+      return await $fetch('/api/end-time', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // 手动设置请求头，避免低版本解析问题
-        },
-        body: JSON.stringify({ t: requestSendTime.value }),
-        signal,
+        body: { t: requestSendTime.value },
+        signal, // 用手动创建的 AbortSignal 替代 AbortSignal.timeout()
       })
-
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`)
-      return await response.json()
+    }
+    catch (error) {
+    // 适配 Nuxt $fetch 的错误类型，区分超时和其他错误
+      if (error.name === 'AbortError') {
+        throw new Error('请求超时') // 统一错误提示
+      }
+      throw error // 其他错误正常抛出
     }
     finally {
-      clearTimeout(timeoutTimer)
+      clearTimeout(timeoutTimer) // 清除定时器，避免内存泄漏
     }
   }
 
